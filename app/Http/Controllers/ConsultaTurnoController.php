@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConsultaTurno;
 use Illuminate\Http\Request;
 
 class ConsultaTurnoController extends Controller
@@ -34,7 +35,12 @@ class ConsultaTurnoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $consultaturno = new ConsultaTurno();
+        $consultaturno->turnos_id = $request->get('turnos_id');
+        $consultaturno->consultas_id = $request->get('consultas_id');
+        $consultaturno->save();
+
+        return view('citaturno.index');
     }
 
     /**

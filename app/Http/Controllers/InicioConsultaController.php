@@ -11,9 +11,24 @@ class InicioConsultaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        /*
+        $dni = $request->get('dni');
+
+        $citas = \DB::SELECT('SELECT COUNT(id) AS conteo
+                              FROM citas');
+
+        $pendientes = \DB::SELECT('SELECT (SELECT COUNT(c.id) FROM citas c
+                                  LEFT JOIN comprobantes co
+                                  ON co.citas_id = c.id) - (SELECT COUNT(c.id) FROM citas c
+                                  RIGHT JOIN comprobantes co
+                                  ON co.citas_id = c.id) as CitasPendientes;');
+                                  */
+
+       // dd($dni);
+
+        return view('inicio.index');
     }
 
     /**

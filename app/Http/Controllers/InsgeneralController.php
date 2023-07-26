@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CitaTurno;
 use Illuminate\Http\Request;
 
-class CitaTurnoController extends Controller
+class InsgeneralController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,12 +34,7 @@ class CitaTurnoController extends Controller
      */
     public function store(Request $request)
     {
-        $citaturno = new CitaTurno();
-        $citaturno->turnos_id = $request->get('turnos_id');
-        $citaturno->citas_id = $request->get('citas_id');
-        $citaturno->save();
-
-        return view('citaturno.index');
+        //
     }
 
     /**

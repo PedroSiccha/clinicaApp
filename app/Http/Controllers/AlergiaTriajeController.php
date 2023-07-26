@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class UserTurnoController extends Controller
+class AlergiaTriajeController extends Controller
 {
     /**
      * Display a listing of the resource.

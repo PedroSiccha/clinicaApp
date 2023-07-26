@@ -2,83 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ocupacion;
 use Illuminate\Http\Request;
 
 class OcupacionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
-    {
-        //
+    { 
+        $ocupacionA = new Ocupacion();
+        $ocupacionA->nombre = $request->nombre;
+        if ($ocupacionA->save()) {
+            $resultado = "Ocupación Registrada";
+        }else {
+            $resultado = "Error en registro";
+        }
+
+        $ocupacion=Ocupacion::get();
+
+        return response()->json(["view"=>view('cita.ocupacions',compact('ocupacion'))->render(),'resultado'=>$resultado]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function guardar(Request $request)
+    { 
+
+        $ocupacionA = new Ocupacion();
+        $ocupacionA->nombre = $request->get('nombre');
+        if ($ocupacionA->save()) {
+            return back();
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function editar(Request $request)
     {
-        //
+        $ocupacion = Ocupacion::where('id', '=', $request->id)->first();
+        $ocupacion->nombre = $request->nombre;
+        if ($ocupacion->save()) {
+            $resultado = "Todo Bien";
+            $ocupacion=Ocupacion::get();
+
+        return response()->json(["view"=>view('configuracion.ocuTab',compact('ocupacion'))->render(),'resultado'=>$resultado]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function eliminar(Request $request)
     {
-        //
-    }
+        $ocu = Ocupacion::where('id', '=', $request->id)->first();
+        if ($ocu->delete()) {
+            $resultado = "Eliminado Correctamente";
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+           $ocupacion=Ocupacion::get();
+
+            return response()->json(["view"=>view('configuracion.ocuTab',compact('ocupacion'))->render(),'resultado'=>$resultado]);
+
+        }
     }
 }

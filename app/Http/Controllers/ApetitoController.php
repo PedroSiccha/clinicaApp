@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Apetito;
 use Illuminate\Http\Request;
 
-class FuncbiologicaController extends Controller
+class ApetitoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,47 @@ class FuncbiologicaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $apetito = new Apetito();
+        $apetito->nombre = $request->get('nombre');
+        $apetito->save();
+        return back();
+    }
+
+    public function crear(Request $request)
+    {
+        $apetito = new Apetito();
+        $apetito->nombre = $request->nombre;
+        if ($apetito->save()) {
+            $resultado = "Grado de Instrucción Registrada";
+            $apetito=Apetito::get();
+        
+            return response()->json(["view"=>view('configmedico.apetitoTab',compact('apetito'))->render(),'resultado'=>$resultado]);
+        }   
+    }
+
+    public function editar(Request $request)
+    {
+        $apetito = Apetito::where('id', '=', $request->id)->first();
+        $apetito->nombre = $request->nombre;
+        if ($apetito->save()) {
+            $resultado = "Todo Bien";
+            $apetito=Apetito::get();
+
+        return response()->json(["view"=>view('configmedico.apetitoTab',compact('apetito'))->render(),'resultado'=>$resultado]);
+        }
+    }
+
+    public function eliminar(Request $request)
+    {
+        $apetito = Apetito::where('id', '=', $request->id)->first();
+        if ($apetito->delete()) {
+            $resultado = "Eliminado Correctamente";
+
+           $apetito=Apetito::get();
+
+            return response()->json(["view"=>view('configmedico.apetitoTab',compact('apetito'))->render(),'resultado'=>$resultado]);
+
+        }
     }
 
     /**

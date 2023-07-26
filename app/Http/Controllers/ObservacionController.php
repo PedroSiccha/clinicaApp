@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Observacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ObservacionController extends Controller
 {
@@ -11,74 +13,34 @@ class ObservacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $observacion = new Observacion();
+        $observacion->nombre = $request->nombre;
+        $observacion->consultas_id = $request->consultas_id;
+        
+        if ($observacion->save()) {
+            $resultado = "Observacion registrado";
+        }else {
+            $resultado = "Error en registro";
+        }
+        DB::statement(DB::raw('SET @rownumObs = 0'));
+
+        $observacion = DB::SELECT('SELECT id, nombre, @rownumObs := @rownumObs + 1 AS Numeracion FROM observacions WHERE consultas_id = "'.$request->consultas_id.'"');
+        
+        return response()->json(["view"=>view('consulta.obs',compact('observacion'))->render(),'resultado'=>$resultado]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function eliminar(Request $request)
     {
-        //
-    }
+        $obs=Observacion::where('id', '=', $request->idObs)->first();
+        if ($obs->delete()) {
+            $resultado = "Eliminado Correctamente";
+            DB::statement(DB::raw('SET @rownumDiag = 0'));
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+            $observacion = DB::SELECT('SELECT nombre, @rownumObs := @rownumObs + 1 AS Numeracion FROM observacions WHERE consultas_id = "'.$request->consultas_id.'"');
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            return response()->json(["view"=>view('consulta.obs',compact('observacion'))->render(),'resultado'=>$resultado]);
+        }
     }
 }

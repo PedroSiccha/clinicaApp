@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class AntecPersonaleController extends Controller
+class FuncvitalController extends Controller
 {
     /**
      * Display a listing of the resource.

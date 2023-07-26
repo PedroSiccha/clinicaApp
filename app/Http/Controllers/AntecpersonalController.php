@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class AreaController extends Controller
+class AntecpersonalController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +13,7 @@ class AreaController extends Controller
      */
     public function index()
     {
-        $area = DB::SELECT('SELECT a.id, a.nombre, a.descrpcion   FROM areas a');
-        
-        return view('area.index', compact('area'));
+        //
     }
 
     /**
@@ -38,11 +34,7 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
-        $area = new Area();
-        $area->nombre = $request->get('nombre');
-        $area->descrpcion = $request->get('descripcion');
-        $area->save();
-        return redirect('area');
+        //
     }
 
     /**

@@ -27,7 +27,7 @@ class HomeController extends Controller
     {
 
         $user = Auth::user();
-        $rol = $user->roles->implode('name', ',');
+        // $rol = $user->roles->implode('name', ',');
         $fecha = date('Y-m-d');
 
         $dni = $request->get('doc');
@@ -36,20 +36,47 @@ class HomeController extends Controller
         DB::statement(DB::raw('SET @rownumexamen = 0'));
         DB::statement(DB::raw('SET @rownumconsulta = 0'));
         
-        $cita = DB::SELECT('SELECT idPacientes, nombrePac, dni, fecaten, idCita, motivo,horaten, hActual, difhora, difmin, Estado, Numeracion
-                            FROM(
-                            (SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac , p.dni, c.fecaten, c.id AS idCita, t.nombre AS motivo,c.horaten AS horaten , (DATE_FORMAT(NOW( ), "%h:%i %p" )) AS hActual,(horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" ))) AS difhora ,(SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )) AS difmin, IF((horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0,"Tiempo","Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
-                                                                FROM citas c, pacientes p, cita_motivo cm, tipoexaminters t
-                                                                where p.id = c.pacientes_id AND cm.citas_id = c.id AND cm.tipoexaminters_id = t.id AND (horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0  AND c.estado = "TRIAJE"  ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" ))) UNION
-                            (SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac , p.dni, c.fecaten, c.id AS idCita, t.nombre AS motivo,c.horaten AS horaten , (DATE_FORMAT(NOW( ), "%h:%i %p" )) AS hActual,(horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" ))) AS difhora , (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )) AS difmin,IF((horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0,"Tiempo","Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
-                                                                FROM citas c, pacientes p, cita_motivo cm, tipoexaminters t
-                                                                where p.id = c.pacientes_id AND cm.citas_id = c.id AND cm.tipoexaminters_id = t.id AND  (horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))>0 AND c.estado = "TRIAJE"  ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" ))) UNION
-                            (SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac , p.dni, c.fecaten, c.id AS idCita, t.nombre AS motivo,c.horaten AS horaten , (DATE_FORMAT(NOW( ), "%h:%i %p" )) AS hActual,(horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" ))) AS difhora , (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )) AS difmin,IF((horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0,"Tiempo","Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
-                                                                FROM citas c, pacientes p, cita_motivo cm, tipoexaminters t
-                                                                where p.id = c.pacientes_id AND cm.citas_id = c.id AND cm.tipoexaminters_id = t.id AND  (horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))<0 AND c.estado = "TRIAJE"  ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )))) citas
-                                                                GROUP BY idCita
-                                                                ORDER BY horaten');
+        $cita = DB::SELECT('SELECT idPacientes, nombrePac, dni, fecaten, idCita, motivo, horaten, hActual, difhora, difmin, Estado, Numeracion
+        FROM (
+            SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac, p.dni AS dni, c.fecaten AS fecaten, c.id AS idCita, t.nombre AS motivo, c.horaten AS horaten, (DATE_FORMAT(NOW(), "%h:%i %p")) AS hActual, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 3600) AS difhora, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 60) AS difmin, IF((horaten - NOW()) = 0, "Tiempo", "Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
+            FROM citas c
+            JOIN pacientes p ON p.id = c.pacientes_id
+            JOIN cita_motivo cm ON cm.citas_id = c.id
+            JOIN tipoexaminters t ON cm.tipoexaminters_id = t.id
+            WHERE (horaten - NOW()) = 0 AND c.estado = "TRIAJE"
+            ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW(), "%i"))
+        ) AS subquery1
         
+        UNION
+        
+        SELECT idPacientes, nombrePac, dni, fecaten, idCita, motivo, horaten, hActual, difhora, difmin, Estado, Numeracion
+        FROM (
+            SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac, p.dni AS dni, c.fecaten AS fecaten, c.id AS idCita, t.nombre AS motivo, c.horaten AS horaten, (DATE_FORMAT(NOW(), "%h:%i %p")) AS hActual, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 3600) AS difhora, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 60) AS difmin, IF((horaten - NOW()) = 0, "Tiempo", "Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
+            FROM citas c
+            JOIN pacientes p ON p.id = c.pacientes_id
+            JOIN cita_motivo cm ON cm.citas_id = c.id
+            JOIN tipoexaminters t ON cm.tipoexaminters_id = t.id
+            WHERE (horaten - NOW()) > 0 AND c.estado = "TRIAJE"
+            ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW(), "%i"))
+        ) AS subquery2
+        
+        UNION
+        
+        SELECT idPacientes, nombrePac, dni, fecaten, idCita, motivo, horaten, hActual, difhora, difmin, Estado, Numeracion
+        FROM (
+            SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac, p.dni AS dni, c.fecaten AS fecaten, c.id AS idCita, t.nombre AS motivo, c.horaten AS horaten, (DATE_FORMAT(NOW(), "%h:%i %p")) AS hActual, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 3600) AS difhora, (TIME_TO_SEC(TIMEDIFF(horaten, NOW())) / 60) AS difmin, IF((horaten - NOW()) = 0, "Tiempo", "Noesta") AS Estado, @rownumcita := @rownumcita + 1 AS Numeracion
+            FROM citas c
+            JOIN pacientes p ON p.id = c.pacientes_id
+            JOIN cita_motivo cm ON cm.citas_id = c.id
+            JOIN tipoexaminters t ON cm.tipoexaminters_id = t.id
+            WHERE (horaten - NOW()) < 0 AND c.estado = "TRIAJE"
+            ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW(), "%i"))
+        ) AS subquery3
+        
+        GROUP BY idCita
+        ORDER BY horaten;
+        ');
+
         $examen = DB::SELECT('(SELECT p.id AS idPacientes, CONCAT(p.nombre, " ", p.apellido) AS nombrePac , p.dni, c.fecaten, c.id AS idCita, c.motivo,c.horaten AS horaten , (DATE_FORMAT(NOW( ), "%h:%i %p" )) AS hActual,(horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" ))) AS difhora ,(SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )) AS difmin, IF((horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0,"Tiempo","Noesta") AS Estado, @rownumexamen := @rownumexamen + 1 AS Numeracion
                               FROM citas c, pacientes p
                               where p.id = c.pacientes_id AND (horaten-(DATE_FORMAT(NOW( ), "%h:%i %p" )))=0  AND c.estado = "EXAMEN"  ORDER BY (SUBSTRING(horaten, 4, 2) - DATE_FORMAT(NOW( ), "%i" )) ) UNION
@@ -78,6 +105,6 @@ class HomeController extends Controller
 
         $cantExamen = DB::SELECT('SELECT COUNT(id) AS cantidad FROM citas WHERE estado = "EXAMEN"');
 
-        return view('home', compact('dni', 'cita', 'consulta', 'cantCitas', 'cantTriaje', 'cantConsulta', 'saludo', 'examen', 'cantExamen'));
+        return view('home', compact('dni', 'cita', 'consulta', 'cantCitas', 'cantTriaje', 'cantConsulta', 'examen', 'cantExamen'));
     }
 }

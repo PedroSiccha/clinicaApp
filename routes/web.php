@@ -311,7 +311,7 @@ Route::post('/examenginecologico/guardar', [App\Http\Controllers\Examenginecolog
 
 
 //RUtas para usuarios
-Route::resource('usuario', [App\Http\Controllers\UsersController::class, 'index']); 
+Route::get('usuario', [App\Http\Controllers\UsersController::class, 'index'])->name('usuario.index'); 
 Route::get('/usuario/{id}', [App\Http\Controllers\UsersController::class, 'show'])->name('perfil');
 //Route::post('/usuario/store', 'UsersController@store')->name('usuario.store');
 

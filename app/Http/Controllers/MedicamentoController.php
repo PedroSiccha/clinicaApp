@@ -2,83 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Medicamento;
 use Illuminate\Http\Request;
 
 class MedicamentoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function crear(Request $request)
     {
-        //
+        $med = new Medicamento();
+        $med->nombre = $request->nombre;
+        $med->concentracion = $request->concentracion;
+        $med->presentacion = $request->presentacion;
+        if ($med->save()) {
+            $resultado = "Medicamento Registrado";
+            $medicamentos = Medicamento::get();
+        
+            return response()->json(["view"=>view('configmedico.medicamentoTab',compact('medicamentos'))->render(),'resultado'=>$resultado]);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function editar(Request $request)
     {
-        //
+        $med = Medicamento::where('id', '=', $request->id)->first();
+        $med->nombre = $request->nombre;
+        $med->concentracion = $request->concentracion;
+        $med->presentacion = $request->presentacion;
+        if ($med->save()) {
+            $resultado = "Todo Bien";
+            $medicamentos = Medicamento::get();
+
+        return response()->json(["view"=>view('configmedico.medicamentoTab',compact('medicamentos'))->render(),'resultado'=>$resultado]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function eliminar(Request $request)
     {
-        //
-    }
+        $medicamento = Medicamento::where('id', '=', $request->id)->first();
+        if ($medicamento->delete()) {
+            $resultado = "Eliminado Correctamente";
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+           $medicamentos = Medicamento::get();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            return response()->json(["view"=>view('configmedico.medicamentoTab',compact('medicamentos'))->render(),'resultado'=>$resultado]);
+        }
     }
 }

@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Observacion extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $fillable = ['id','nombre', 'consultas_id'];
+
+    public static function obsCon($id){
+    	return Observacion::where('consultas_id', '=', $id) -> get();
+    }
 }

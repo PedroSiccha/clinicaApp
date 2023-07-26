@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Genero extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $fillable = ['id','nombre' ];
 }

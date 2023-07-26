@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ocupacion extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $fillable = ['id','nombre'];
 }

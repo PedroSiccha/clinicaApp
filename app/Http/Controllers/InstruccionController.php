@@ -2,83 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instruccion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InstruccionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $instruccions = new Instruccion();
+        $instruccions->nombre = $request->nombre;
+        if ($instruccions->save()) {
+            $resultado = "Grado de Instrucción Registrada";
+        }else {
+            $resultado = "Error en registro";
+        }
+
+        $instruccion=Instruccion::get();
+
+        return response()->json(["view"=>view('cita.instruccions',compact('instruccion'))->render(),'resultado'=>$resultado]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function guardar(Request $request)
     {
-        //
+        $instruccions = new Instruccion();
+        $instruccions->nombre = $request->get('nombre');
+        if ($instruccions->save()) {
+            return back();
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function editar(Request $request)
     {
-        //
+        $instruccion = Instruccion::where('id', '=', $request->id)->first();
+        $instruccion->nombre = $request->nombre;
+        if ($instruccion->save()) {
+            $resultado = "Todo Bien";
+            $instruccion=Instruccion::get();
+
+        return response()->json(["view"=>view('configuracion.instTab',compact('instruccion'))->render(),'resultado'=>$resultado]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function eliminar(Request $request)
     {
-        //
-    }
+        $inst = Instruccion::where('id', '=', $request->id)->first();
+        if ($inst->delete()) {
+            $resultado = "Eliminado Correctamente";
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+           $instruccion=Instruccion::get();
+
+            return response()->json(["view"=>view('configuracion.instTab',compact('instruccion'))->render(),'resultado'=>$resultado]);
+
+        }
     }
 }

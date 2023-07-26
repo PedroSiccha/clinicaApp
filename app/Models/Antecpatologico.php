@@ -7,5 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Antecpatologico extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $table = 'antecpatologicos';
+    protected $fillable = ['id', 'nombre', 'triaje_id'];
+
+    
+    public static function apaTri($id){
+    	return Antecpatologico::where('triaje_id', '=', $id) -> get();
+    }
 }

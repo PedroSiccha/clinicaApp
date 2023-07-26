@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alergia;
 use Illuminate\Http\Request;
 
 class AlergiaController extends Controller
@@ -34,7 +35,29 @@ class AlergiaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $alergia = new Alergia();
+        $alergia->nombre = $request->nomalergia;
+        if ($alergia->save()) {
+            $resultado = "Grado de Instrucción Registrada";
+        }else {
+            $resultado = "Error en registro";
+        }
+        $ale=Alergia::get();
+        return response()->json(["view"=>view('triaje.alergia',compact('ale'))->render(),'resultado'=>$resultado]);
+    }
+
+    public function crear(Request $request)
+    {
+
+        $alergia = new Alergia();
+        $alergia->nombre = $request->nombre;
+        if ($alergia->save()) {
+            $resultado = "Grado de Instrucción Registrada";
+            $alergia=Alergia::get();
+        
+            return response()->json(["view"=>view('configmedico.alergiaTab',compact('alergia'))->render(),'resultado'=>$resultado]);
+        }   
     }
 
     /**
@@ -71,14 +94,34 @@ class AlergiaController extends Controller
         //
     }
 
+    public function editar(Request $request)
+    {
+        $alergia = Alergia::where('id', '=', $request->id)->first();
+        $alergia->nombre = $request->nombre;
+        if ($alergia->save()) {
+            $resultado = "Todo Bien";
+            $alergia=Alergia::get();
+
+        return response()->json(["view"=>view('configmedico.alergiaTab',compact('alergia'))->render(),'resultado'=>$resultado]);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function eliminar(Request $request)
     {
-        //
+        $alergia = Alergia::where('id', '=', $request->id)->first();
+        if ($alergia->delete()) {
+            $resultado = "Eliminado Correctamente";
+
+           $alergia=Alergia::get();
+
+            return response()->json(["view"=>view('configmedico.alergiaTab',compact('alergia'))->render(),'resultado'=>$resultado]);
+
+        }
     }
 }

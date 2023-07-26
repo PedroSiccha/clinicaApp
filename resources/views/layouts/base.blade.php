@@ -6,9 +6,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/ico" />
+    <link rel="icon" href="{{asset('images/favicon.ico')}}" type="image/ico" />
+    <script src="{{asset('js/sweetalert.min.js')}}"></script>
+    <link href="{{asset('../vendors/bootstrap/dist/css/sweetalert.css')}}" rel="stylesheet" type="text/css"> 
 
-    <title>ClinicaSystem! | @yield('title') </title>
+    <title>ClinicaSystem! | @yield('title') </title> 
 
     <!-- Bootstrap -->
     <link href="{{asset('../vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -31,12 +33,8 @@
     <!-- Custom Theme Style -->
     <link href="{{asset('../build/css/custom.min.css')}}" rel="stylesheet">
 
-  <script src="{{asset('js/jquery.min.js')}}"></script>
-    <script src="{{asset('js/moment.min.js')}}"></script>
-    <script rel="stylesheet" href="{{asset('css/fullcalendar.min.css')}}"></script>
-    <script src="{{asset('js/fullcalendar.min.js')}}"></script>
-    <script src="{{asset('js/es.js')}}"></script>
-
+    <link href="{{asset('../build/css/easy-autocomplete.css')}}" rel="stylesheet">
+    <link href="{{asset('../build/css/easy-autocomplete.themes.css')}}" rel="stylesheet">
   </head>
 
   <body class="nav-md">
@@ -45,7 +43,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="{{asset('/')}}" class="site_title"><i class="fa fa-heart"></i> <span>ClinicaSystem!</span></a>
+              <a href="{{asset('/home')}}" class="site_title"><i class="fa fa-heart"></i> <span>ClinicaSystem!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -57,7 +55,7 @@
               </div>
               <div class="profile_info">
                 <span>Bienvenido,</span>
-                <h2>Administrador</h2>
+                <h2>{{ Auth::user()->name }}</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -69,50 +67,54 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a><i class="fa fa-home"></i> Inicio <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="\home"><i class="fa fa-home"></i> Inicio <span></span></a>
+
+                  </li>
+                  <li><a><i class="fa fa-edit"></i> Amdisión <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="{{asset('index.html')}}">Cita Médica</a></li>
-                      <li><a href="{{asset('index2.html')}}">Historial Médica</a></li>
-                      <li><a href="{{asset('index3.html')}}">Consulta Médica</a></li>
+                      <li><a data-toggle="modal" data-target=".bs-cita-modal-lg">Generar Cita</a></li>
+                      <li><a href="{{asset('/paciente')}}">Ver Lista de Pacientes</a></li>
+                      <li><a href="{{ asset('/cita/show') }}">Ver Citas Pendientes</a></li>
+                      <li><a href="{{ asset('/listado_graficas') }}">Reporte Citas</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-edit"></i> Configuración <span class="fa fa-chevron-down"></span></a>
+                  
+                  <li><a><i class="fa fa-stethoscope"></i> Triaje <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="{{asset('/estadocivil')}}">Estado Civil</a></li>
-                      <li><a href="{{asset('/instruccion')}}">Instrucción</a></li>
-                      <li><a href="{{asset('/area')}}">Especialidad</a></li>
-                      <li><a href="{{asset('/genero')}}">Genero</a></li>
-                      <li><a href="{{asset('form_upload.html')}}">Configuracion</a></li>
+                      <li><a href="{{asset('/triaje/show')}}">Lista de Triaje</a></li>
+                      <li><a data-toggle="modal" data-target=".bs-triajes-modal-lg">Triaje por Paciente</a></li>
+                      <li><a href="{{ asset('/listado_graficas_triaje') }}">Reporte Triaje</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-desktop"></i> Registros <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-user-md"></i> Consulta <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="{{asset('general_elements.html')}}">Pacientes</a></li>
-                      <li><a href="{{asset('media_gallery.html')}}">Médicos</a></li>
-                      <li><a href="{{asset('typography.html')}}">Empleados</a></li>
-                      <li><a href="{{asset('icons.html')}}">Acompañantes</a></li>
+                      <li><a href="{{asset('/consulta/ver')}}">Lista de Consultas</a></li>
+                      <li><a href="{{ route('consulta.pdf') }}">Imprimir Lista de Consultas</a></li>
+                      <li><a href="{{ asset('/listado_graficas_consultas') }}">Reporte Consultas</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-table"></i> Vistas <span class="fa fa-chevron-down"></span></a>
+             
+                  <li><a><i class="fa fa-gears"></i> Configuración <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="{{asset('tables.html')}}">Informe Médico</a></li>
-                      <li><a href="{{asset('tables_dynamic.html')}}">Receta Médica</a></li>
+                      <li><a href="{{asset('/configuracion')}}">Configuraciones Básicas</a></li>
+                      <li><a href="{{asset('/configmedico')}}">Configuraciones Médicas</a></li>
+                    </ul>
+                  </li>
+                  
+                  <li><a><i class="fa fa-warning"></i> Gestion de Seguridad <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{{ROUTE('usuario.index')}}">Registrar Personal</a></li>
+                      
+                    </ul>
+                  </li>
+                  
+                  <li><a><i class="fa fa-line-chart"></i> Estadisticas <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
                       <li><a href="{{asset('/cita/show')}}">Lista de Citas</a></li>
                     </ul>
                   </li>
-                  <li><a><i class="fa fa-bar-chart-o"></i> Estadísticas <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="{{asset('chartjs.html')}}">Días</a></li>
-                      <li><a href="{{asset('chartjs2.html')}}">Mes</a></li>
-                      <li><a href="{{asset('morisjs.html')}}">Año</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-clone"></i> Reportes <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="{{asset('fixed_sidebar.html')}}">Fixed Sidebar</a></li>
-                      <li><a href="{{asset('fixed_footer.html')}}">Fixed Footer</a></li>
-                    </ul>
-                  </li>
+                  
+                  
                 </ul>
               </div>
               
@@ -128,8 +130,8 @@
               <a data-toggle="tooltip" data-placement="top" title="FullScreen">
                 <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
               </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+              <a data-toggle="tooltip" data-placement="top" title="Limpiar Base de Datos">
+                <span class="glyphicon glyphicon-floppy-remove" aria-hidden="true" onclick="LimpiarBd()"></span>
               </a>
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="{{asset('login.html')}}">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
@@ -150,84 +152,19 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{asset('images/img.jpg')}}" alt="">Administrador
+                    <img src="{{asset('images/img.jpg')}}" alt="">{{ Auth::user()->name }}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="javascript:;"> Perfil</a></li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Herramientas</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Ayuda</a></li>
-                    <li><a href="{{asset('login.html')}}"><i class="fa fa-sign-out pull-right"></i> Salir</a></li>
-                  </ul>
-                </li>
-
-                <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <li>
-                      <a>
-                        <span class="image"><img src="{{asset('images/img.jpg')}}" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="{{asset('images/img.jpg')}}" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="{{asset('images/img.jpg')}}" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="image"><img src="{{asset('images/img.jpg')}}" alt="Profile Image" /></span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
+                    <li><a href="{{ route('perfil',[ Auth::user()->id ]) }}"> Perfil</a></li>
+                    
+                    <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
+                          document.getElementById('logout-form').submit();"><i class="fa fa-sign-out pull-right"></i>
+                                            Salir
+                    </a></li>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                      {{ csrf_field() }}
+                    </form>
                   </ul>
                 </li>
               </ul>
@@ -261,7 +198,7 @@
 
         <!-- footer content -->
         <footer>
-          <div class="pull-right">
+          <div class="pull-right ">
             Pedro D. Siccha <a href="{{asset('https://www.facebook.com/pedro.siccha')}}"></a>
           </div>
           <div class="clearfix"></div>
@@ -270,8 +207,19 @@
       </div>
     </div>
 
+    <script>
+      function LimpiarBd(){
+          var nombre="1";
+          //alert(nombre);
+          $.post( "{{ Route('configuracion.destroy') }}", {nombre:nombre, _token:'{{csrf_token()}}'}).done(function(data) {
+          console.log(data.codigo);
+          alert(data.resultado);  
+          });
+        }
+    </script>
     <!-- jQuery -->
     <script src="{{asset('../vendors/jquery/dist/jquery.min.js')}}"></script>
+   {{--  <script src="{{asset('../vendors/jquery/jquery3.js')}}"></script> --}}
     <!-- Bootstrap -->
     <script src="{{asset('../vendors/bootstrap/dist/js/bootstrap.min.js')}}"></script>
     <!-- FastClick -->
@@ -320,6 +268,7 @@
 
 <!-- Custom Theme Scripts -->
       <script src="{{asset('../build/js/custom.min.js')}}"></script>
+      <script src="{{asset('../build/js/jquery.easy-autocomplete.js')}}"></script>
 
        <!-- Bootstrap -->
     <link href="{{asset('../vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -333,10 +282,71 @@
 
     <!-- Custom styling plus plugins -->
     <link href="{{asset('../build/css/custom.min.css')}}" rel="stylesheet"> 
+    <script src="{{asset('../js/highcharts.js')}}"></script>
+    
 
     
 
     <script src="{{asset('../vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
-	@yield('script')
+    <script>
+      function baseUrl(url){
+        return '{{url('')}}/' + url;
+      }
+    </script>
+    
+  @yield('script')
+  
   </body>
+
 </html>
+
+<!-- Modal Generador de CIta Médica --> 
+<form class="form-horizontal form-label-left" id="feedback_form" method="GET" action="/cita">
+  <div class="modal fade bs-cita-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Inserte DNI o Nombres Completos del Paciente</h4>
+          </div>
+          <div class="modal-body">
+            <h4>DNI:</h4>
+            <input autocomplete="off" type="text" id="doc" name="doc" required="required" class="form-control" >
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="compararDNI()">Aceptar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal Ver Triaje Por Persona --> 
+<form class="form-horizontal form-label-left" id="feedback_form" method="GET" action="/triaje/ver">
+  <div class="modal fade bs-triajes-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Inserte DNI del Paciente</h4>
+          </div>
+          <div class="modal-body">
+            <h4>DNI:</h4>
+            <input autocomplete="off" type="text" id="doc" name="doc" required="required" class="form-control" onkeypress="return numeros(event);" maxlength="8" minlength="8">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Aceptar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+

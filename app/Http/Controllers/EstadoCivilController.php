@@ -8,84 +8,55 @@ use Illuminate\Support\Facades\DB;
 
 class EstadoCivilController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $estadocivil = DB::SELECT('SELECT e.id, e.nombre  FROM estadocivils e');
-        
+        $estadocivil = DB::SELECT('SELECT e.id, e.nombre FROM estadocivils e');
         return view('estadocivil.index', compact('estadocivil'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $estadocivil = new EstadoCivil();
-        $estadocivil->nombre = $request->get('nombre');
-        $estadocivil->save();
-        return redirect('estadocivil');
+        $estadocivils = new Estadocivil();
+        $estadocivils->nombre = $request->nombre;
+        if($estadocivils->save()){
+            $resultado = "Tratamiento registrado";
+        }else{
+            $resultado = "Error en registro";
+        }
+        $estadocivil=Estadocivil::get();
+        return response()->json(["view"=>view('cita.estadocivils',compact('estadocivil'))->render(),'resultado'=>$resultado]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function guardar(Request $request)
     {
-        //
+        $estadocivils = new Estadocivil();
+        $estadocivils->nombre = $request->get('nombre');
+        if($estadocivils->save()){
+            return back();
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function editar(Request $request)
     {
-        //
+        $estCivil = Estadocivil::where('id', '=', $request->id)->first();
+        $estCivil->nombre = $request->nombre;
+        if ($estCivil->save()) {
+            $resultado = "Todo Bien";
+            $estadocivil=Estadocivil::get();
+
+        return response()->json(["view"=>view('configuracion.estCivilTabla',compact('estadocivil'))->render(),'resultado'=>$resultado]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function eliminar(Request $request)
     {
-        //
-    }
+        $estCivil = Estadocivil::where('id', '=', $request->id)->first();
+        if ($estCivil->delete()) {
+            $resultado = "Eliminado Correctamente";
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+           $estadocivil=Estadocivil::get();
+
+            return response()->json(["view"=>view('configuracion.estCivilTabla',compact('estadocivil'))->render(),'resultado'=>$resultado]);
+        }
     }
 }

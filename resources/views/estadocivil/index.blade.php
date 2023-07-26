@@ -6,9 +6,9 @@
 <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Gestión de Estado Civil <small><button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Nuevo</button></small></h2>
-            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-sm">
+            <h2>Gestión de Estado Civil <small><button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Nuevo</button></small></h2>
+            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
                   <div class="modal-content">
     
                     <div class="modal-header">
@@ -17,7 +17,7 @@
                       <h4 class="modal-title" id="myModalLabel">Crear Nuevo Género</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal form-label-left" id="feedback_form" method="POST" action="/estadocivil">
+                        <form class="form-horizontal form-label-left" id="feedback_form" method="POST" action="/estadocivil/store">
                           {!! csrf_field() !!}
           
                         <div class="form-group">
@@ -32,12 +32,7 @@
                           <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
                             
                             <button type="submit" class="btn btn-success" >Guardar</button>
-                            <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="new PNotify({
-                              title: 'Error!',
-                              text: 'No se pudo crear el Nuevo Género.',
-                              type: 'error',
-                              styling: 'bootstrap3'
-                          });">Cancelar</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-primary" >Cancelar</button>
                             
                           </div>
                         </div>
@@ -82,7 +77,10 @@
                 <tr>
                   <th scope="row">{{$eci->id}}</th>
                   <td>    {{$eci->nombre}} </td>
-                  <td>@mdo</td>
+                  <td><div class="btn-group">
+                        <a  href="#"><button type="button" class="btn btn-danger">Eliminar</button></a>
+                        <a  href="#"><button type="button" class="btn btn-primary">Editar</button></a>           
+              </div></td>
                 </tr>
                 @endforeach
                 

@@ -53,6 +53,18 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'examenes' => [
+            'driver' => 'local',
+            'root' => public_path('images/examenes'),
+            'visibility'=> 'public',
+        ],
+        
+        'examenAux' => [
+            'driver' => 'local',
+            'root' => public_path('images/examenAux'),
+            'visibility'=> 'public',
+        ],
+
     ],
 
     /*

@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Unidmedida extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $fillable = ['id','nombre','detalle'];
 }

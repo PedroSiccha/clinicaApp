@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TipoPago;
 use Illuminate\Http\Request;
 
 class TipoPagoController extends Controller
@@ -34,7 +35,12 @@ class TipoPagoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tipopago = new TipoPago();
+        $tipopago->nombre = $request->get('nombre');
+        $tipopago->detalle = $request->get('detalle');
+        $tipopago->save();
+
+        return view('citaturno.index');
     }
 
     /**

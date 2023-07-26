@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Genero;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GeneroController extends Controller
 {
@@ -13,7 +15,9 @@ class GeneroController extends Controller
      */
     public function index()
     {
-        //
+        $genero = DB::SELECT('SELECT g.id,g.nombre  FROM generos g');
+        
+        return view('genero.index', compact('genero'));
     }
 
     /**
@@ -21,9 +25,10 @@ class GeneroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+       // $request->user()->authorizeRoles(['admin']);
+        return view('genero.create');
     }
 
     /**
@@ -34,7 +39,10 @@ class GeneroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $genero = new Genero();
+        $genero->nombre = $request->get('nombre');
+        $genero->save();
+        return redirect('genero');
     }
 
     /**
@@ -56,7 +64,8 @@ class GeneroController extends Controller
      */
     public function edit($id)
     {
-        //
+        $genero = Genero::find($id);
+        return view('genero.edit', compact('genero'));
     }
 
     /**
@@ -68,7 +77,10 @@ class GeneroController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $genero = Genero::findorfail($id);
+        $updateNow = $genero->update($input);
+        return redirect('genero');
     }
 
     /**
@@ -79,6 +91,7 @@ class GeneroController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Genero::destroy($id);
+        return redirect('genero');
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Instruccion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InstruccionController extends Controller
 {
@@ -13,7 +15,9 @@ class InstruccionController extends Controller
      */
     public function index()
     {
-        //
+        $instruccion = DB::SELECT('SELECT i.id, i.nombre  FROM instruccions i');
+        
+        return view('instruccion.index', compact('instruccion'));
     }
 
     /**
@@ -34,7 +38,10 @@ class InstruccionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $instruccion = new Instruccion();
+        $instruccion->nombre = $request->get('nombre');
+        $instruccion->save();
+        return redirect('instruccion');
     }
 
     /**

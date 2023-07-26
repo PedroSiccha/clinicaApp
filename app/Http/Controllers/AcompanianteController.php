@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acompaniante;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AcompanianteController extends Controller
 {
@@ -11,9 +13,13 @@ class AcompanianteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $id = $request->get('personas_id');
+        $acompañante = DB::SELECT('SELECT a.id, CONCAT("p.nombres"," ", "p.apellidos" ) as nombre, p.edad, p.doc, p.telefono, p.direccion, a.parentezco  
+        FROM personas p, acompañantes a
+        WHERE a.personas_id = p.id');
+        return view('acompañante.index', compact('acompañante'));
     }
 
     /**
@@ -23,7 +29,7 @@ class AcompanianteController extends Controller
      */
     public function create()
     {
-        //
+        return view('acompañante.create');
     }
 
     /**
@@ -34,7 +40,10 @@ class AcompanianteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $acompañante = new Acompaniante();
+        $acompañante->nombre = $request->get('nombre');
+        $acompañante->save();
+        return redirect('acompañante');
     }
 
     /**
@@ -45,7 +54,8 @@ class AcompanianteController extends Controller
      */
     public function show($id)
     {
-        //
+        $acompañante = Acompaniante::find($id);
+        return view('acompañante.edit', compact('acompañante'));
     }
 
     /**

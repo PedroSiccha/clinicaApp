@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consulta;
 use Illuminate\Http\Request;
 
 class ConsultaController extends Controller
@@ -34,7 +35,15 @@ class ConsultaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $consulta = new Consulta();
+        $consulta->tiempo = $request->get('tiempo');
+        $consulta->fecha = $request->get('fecha');
+        $consulta->hora = $request->get('hora');
+        $consulta->citas_id = $request->get('citas_id');
+        $consulta->histclinicas_id = $request->get('histclinicas_id');
+        $consulta->save();
+
+        return view('citaturno.index');
     }
 
     /**

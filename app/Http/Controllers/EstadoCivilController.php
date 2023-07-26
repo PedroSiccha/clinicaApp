@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EstadoCivil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EstadoCivilController extends Controller
 {
@@ -13,7 +15,9 @@ class EstadoCivilController extends Controller
      */
     public function index()
     {
-        //
+        $estadocivil = DB::SELECT('SELECT e.id, e.nombre  FROM estadocivils e');
+        
+        return view('estadocivil.index', compact('estadocivil'));
     }
 
     /**
@@ -34,7 +38,10 @@ class EstadoCivilController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $estadocivil = new EstadoCivil();
+        $estadocivil->nombre = $request->get('nombre');
+        $estadocivil->save();
+        return redirect('estadocivil');
     }
 
     /**

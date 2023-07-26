@@ -8,9 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Ocupacion extends Model
 {
     // use HasFactory;
-    protected $fillable = ['id','nombre','pacientes_id'];
-
-    public static function ocuPac($id){
-    	return Ocupacion::where('pacientes_id', '=', $id) -> get();
-    }
+    protected $fillable = ['id','nombre'];
 }

@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Antecpatologico extends Model
 {
     // use HasFactory;
-    protected $fillable = ['id','detalle','histclinicas_id'];
+    protected $table = 'antecpatologicos';
+    protected $fillable = ['id', 'nombre', 'triaje_id'];
 
-    public static function antHist($id){
-    	return Antecpatologico::where('histclinicas_id', '=', $id) -> get();
+    
+    public static function apaTri($id){
+    	return Antecpatologico::where('triaje_id', '=', $id) -> get();
     }
 }

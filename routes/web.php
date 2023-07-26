@@ -22,40 +22,40 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('/', 'InicioConsultaController');
+Route::get('/', [App\Http\Controllers\InicioConsultaController::class, 'index']);
 
-Route::resource('/inicio', 'InicioConsultaController');
+Route::get('/inicio', [App\Http\Controllers\InicioConsultaController::class, 'index']);
 
 //ruta genero
-Route::resource('/genero', 'GeneroController');
+Route::get('/genero', [App\Http\Controllers\GeneroController::class, 'index']);
 
 //ruta acompañante
-Route::resource('/acompañante', 'AcompañanteController');
+Route::get('/acompañante', [App\Http\Controllers\AcompañanteController::class, 'index']);
 
 //ruta Estado Civil
-Route::resource('/estadocivil', 'EstadoCivilController');
+Route::get('/estadocivil', [App\Http\Controllers\EstadoCivilController::class, 'index']);
 
 //ruta Instruccion
-Route::resource('/instruccion', 'InstruccionController');
+Route::get('/instruccion', [App\Http\Controllers\InstruccionController::class, 'index']);
 
 //ruta Persona
-Route::resource('/persona', 'PersonaController');
+Route::get('/persona', [App\Http\Controllers\PersonaController::class, 'index']);
 
 //ruta Area
-Route::resource('/area', 'AreaController');
+Route::get('/area', [App\Http\Controllers\AreaController::class, 'index']);
 
 //ruta Paciemte
-Route::resource('/paciente', 'PacienteController');
+Route::get('/paciente', [App\Http\Controllers\PacienteController::class, 'index']);
 //Route::resource('/paciente/create', 'PacienteController');
 
 //Ruta Cita
-Route::resource('/cita', 'CitaController');
+Route::get('/cita', [App\Http\Controllers\CitaController::class, 'index']);
 
-Route::get('/cita/create/{doc}', 'CitaController@create');
-Route::get('/cita/create?doc={id}', 'CitaController@create');
+Route::get('/cita/create/{doc}', [App\Http\Controllers\CitaController::class, 'create']);
+Route::get('/cita/create?doc={id}', [App\Http\Controllers\CitaController::class, 'create']);
 
 //ruta persona
-Route::resource('/persona', 'PersonaController');
+Route::get('/persona', [App\Http\Controllers\PersonaController::class, 'index']);
 
 //ruta Comprobante
-Route::resource('/comprobante', 'ComprobanteController');
+Route::get('/comprobante', [App\Http\Controllers\ComprobanteController::class, 'index']);

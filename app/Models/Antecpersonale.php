@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Antecpersonale extends Model
 {
     // use HasFactory;
-    protected $fillable = ['id','nombre','resultados','detalle','histclinicas_id'];
+    protected $fillable = ['id','fecultimregla','cangestaciones','papanicolao', 'ps_id', 'manticonceotivos_id'];
 
-    public static function anpHist($id){
-    	return Antecpersonale::where('histclinicas_id', '=', $id) -> get();
+    public static function anpPs($id){
+    	return Antecpersonale::where('ps_id', '=', $id) -> get();
+    }
+    public static function anpMan($id){
+    	return Antecpersonale::where('manticonceotivos_id', '=', $id) -> get();
     }
 }
